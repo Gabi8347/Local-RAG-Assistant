@@ -7,6 +7,9 @@ env/
 __pycache__/
 *.pyc
 
+# Local database (generated data)
+*.db
+
 # Secrets / environment variables
 .env
 *.env
