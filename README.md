@@ -48,7 +48,7 @@ pip show foundry-local-sdk
 8. `model.get_chat_client()` — gets the chat client
 9. `client.complete_chat(messages)` — sends the question; read the answer via `response.choices[0].message.content`
 
-### Week 1 proof-of-concept (chat-only, superseded by the RAG loop below)
+### Proof-of-concept (chat-only, superseded by the RAG loop below)
 
 ```python
 from foundry_local_sdk import FoundryLocalManager, Configuration
@@ -169,7 +169,8 @@ Local-RAG-Assistant/
 - [x] Embedding model discovered and tested, SQLite schema + retrieval (Week 2)
 - [x] PDF ingestion pipeline (Week 3)
 - [x] `answer_query()` + interactive CLI (Week 4)
-- [ ] Pin remaining housekeeping / final write-up
+- [x] Functional testing: answerable/unanswerable/edge cases, relevance gating, retry on transient errors — see [TESTING.md](TESTING.md) (Week 5)
+- [ ] Final write-up / demo prep (Week 6)
 
 ## References
 

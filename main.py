@@ -1,9 +1,14 @@
+import time
 from foundry_local_sdk import FoundryLocalManager, Configuration
+from foundry_local_sdk.exception import FoundryLocalException
 import db
 
 CHAT_ALIAS = "phi-3.5-mini"
 EMBEDDING_ALIAS = "qwen3-embedding-0.6b"
 TOP_K = 3
+RELEVANCE_THRESHOLD = 0.4
+DONT_KNOW_ANSWER = "I don't have information about that in my documents."
+CHAT_RETRIES = 2
 
 
 def load_model(manager, alias):
@@ -28,11 +33,25 @@ def build_prompt(question, chunks):
     ]
 
 
+def complete_chat_with_retry(chat_client, messages):
+    for attempt in range(CHAT_RETRIES + 1):
+        try:
+            return chat_client.complete_chat(messages)
+        except FoundryLocalException:
+            if attempt == CHAT_RETRIES:
+                raise
+            time.sleep(1)
+
+
 def answer_query(question, embedding_client, chat_client):
     query_embedding = embedding_client.generate_embedding(question).data[0].embedding
     chunks = db.get_top_chunks(query_embedding, top_k=TOP_K)
+
+    if not chunks or chunks[0][0] < RELEVANCE_THRESHOLD:
+        return DONT_KNOW_ANSWER
+
     messages = build_prompt(question, chunks)
-    response = chat_client.complete_chat(messages)
+    response = complete_chat_with_retry(chat_client, messages)
     return response.choices[0].message.content
 
 
