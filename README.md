@@ -159,7 +159,7 @@ python main.py
 
 - **CPU-only inference is slow**: 24–37s per answer on this machine, occasionally over 100s for longer generations — far from the plan's ~1–3s estimate, which assumes GPU/NPU acceleration.
 - **No OCR**: scanned/image-only PDFs produce zero chunks silently (see Issues table).
-- **No source citation in the answer text**: chunk sources are included in the prompt context, but the model isn't instructed to explicitly cite them — it just uses the content.
+- **Source citation is app-appended, not model-generated**: `answer_query()` returns the distinct source filenames of the chunks used, and the CLI prints them as `Sources: ...` below the answer. The model itself is not instructed to cite sources inline — this is a deterministic list from retrieval, not something the LLM composed.
 - **Single local user, no concurrency handling**: `db.py` opens a new SQLite connection per call, fine for one interactive user but not designed for concurrent access.
 - **Fixed-size chunking can split a sentence mid-way**: acceptable at this scale, but a paragraph-aware splitter would produce cleaner chunks.
 

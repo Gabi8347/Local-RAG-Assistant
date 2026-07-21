@@ -48,11 +48,12 @@ def answer_query(question, embedding_client, chat_client):
     chunks = db.get_top_chunks(query_embedding, top_k=TOP_K)
 
     if not chunks or chunks[0][0] < RELEVANCE_THRESHOLD:
-        return DONT_KNOW_ANSWER
+        return DONT_KNOW_ANSWER, []
 
     messages = build_prompt(question, chunks)
     response = complete_chat_with_retry(chat_client, messages)
-    return response.choices[0].message.content
+    sources = list(dict.fromkeys(source for _, _, _, source in chunks))
+    return response.choices[0].message.content, sources
 
 
 def main():
@@ -74,8 +75,10 @@ def main():
         question = input("\n> ").strip()
         if not question:
             break
-        answer = answer_query(question, embedding_client, chat_client)
+        answer, sources = answer_query(question, embedding_client, chat_client)
         print(answer)
+        if sources:
+            print(f"Sources: {', '.join(sources)}")
 
 
 if __name__ == "__main__":

@@ -34,9 +34,10 @@ def main():
             print("  -> SKIPPED (empty input should be handled by the CLI loop, not answer_query)\n")
             continue
         start = time.time()
-        answer = answer_query(question, embedding_client, chat_client)
+        answer, sources = answer_query(question, embedding_client, chat_client)
         elapsed = time.time() - start
-        print(f"  -> ({elapsed:.1f}s) {answer}\n")
+        src_str = f"  [Sources: {', '.join(sources)}]" if sources else ""
+        print(f"  -> ({elapsed:.1f}s) {answer}{src_str}\n")
 
 
 if __name__ == "__main__":
