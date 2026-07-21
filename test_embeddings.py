@@ -1,5 +1,5 @@
 from foundry_local_sdk import FoundryLocalManager, Configuration
-import math
+from db import cosine_similarity
 
 embedding_alias = "qwen3-embedding-0.6b"
 
@@ -28,14 +28,6 @@ query = "Where is the cat?"
 response = client.generate_embeddings(texts + [query])
 vectors = [item.embedding for item in response.data]
 *doc_vectors, query_vector = vectors
-
-
-def cosine_similarity(a, b):
-    dot = sum(x * y for x, y in zip(a, b))
-    norm_a = math.sqrt(sum(x * x for x in a))
-    norm_b = math.sqrt(sum(y * y for y in b))
-    return dot / (norm_a * norm_b)
-
 
 scores = [cosine_similarity(query_vector, v) for v in doc_vectors]
 
