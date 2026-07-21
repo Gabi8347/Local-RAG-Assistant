@@ -1,4 +1,4 @@
-# Week 5 — Functional Testing & Evaluation
+# Functional Testing & Evaluation
 
 Test script: [test_qa.py](test_qa.py). Run with `python test_qa.py`.
 
